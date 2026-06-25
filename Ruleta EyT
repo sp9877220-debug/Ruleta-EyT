@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ruleta EyT</title>
+
+<style>
+
+body{
+font-family:Arial;
+text-align:center;
+background:#fff5fa;
+padding:20px;
+}
+
+
+.contenedor{
+position:relative;
+width:330px;
+margin:auto;
+}
+
+
+.aguja{
+
+position:absolute;
+top:-25px;
+left:145px;
+
+width:0;
+height:0;
+
+border-left:20px solid transparent;
+border-right:20px solid transparent;
+border-top:45px solid black;
+
+z-index:5;
+
+}
+
+
+.ruleta{
+
+width:300px;
+height:300px;
+
+border-radius:50%;
+
+border:10px solid #222;
+
+
+background:
+
+conic-gradient(
+
+#ff8fa3 0deg 60deg,
+
+#ffd166 60deg 120deg,
+
+#90caf9 120deg 180deg,
+
+#a7e57a 180deg 240deg,
+
+#c77dff 240deg 300deg,
+
+#ffe8b6 300deg 360deg
+
+);
+
+
+position:relative;
+
+
+transition:transform 6s cubic-bezier(.15,.85,.25,1);
+
+
+box-shadow:0 0 25px #aaa;
+
+}
+
+
+
+.premio{
+
+position:absolute;
+
+width:100px;
+
+left:100px;
+
+top:110px;
+
+font-size:15px;
+
+font-weight:bold;
+
+}
+
+
+
+.premio span{
+
+font-size:38px;
+
+display:block;
+
+}
+
+
+
+.p1{transform:rotate(30deg) translateY(-100px);}
+.p2{transform:rotate(90deg) translateY(-100px);}
+.p3{transform:rotate(150deg) translateY(-100px);}
+.p4{transform:rotate(210deg) translateY(-100px);}
+.p5{transform:rotate(270deg) translateY(-100px);}
+.p6{transform:rotate(330deg) translateY(-100px);}
+
+
+
+button{
+
+margin:20px;
+
+padding:15px 40px;
+
+font-size:20px;
+
+border-radius:20px;
+
+border:0;
+
+background:#ff1493;
+
+color:white;
+
+font-weight:bold;
+
+}
+
+
+
+#panel{
+
+display:none;
+
+background:white;
+
+padding:20px;
+
+border-radius:20px;
+
+}
+
+
+
+input{
+
+padding:10px;
+
+font-size:16px;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h1>🎁 Ruleta EyT</h1>
+
+
+<div class="contenedor">
+
+
+<div class="aguja"></div>
+
+
+<div id="ruleta" class="ruleta">
+
+
+<div class="premio p1">
+<span>👚</span>
+Blusa
+</div>
+
+
+<div class="premio p2">
+<span>💎</span>
+Joya
+</div>
+
+
+<div class="premio p3">
+<span>👟</span>
+Zapatos
+</div>
+
+
+<div class="premio p4">
+<span>🎁</span>
+Sorpresa
+</div>
+
+
+<div class="premio p5">
+<span>👜</span>
+Bolso
+</div>
+
+
+<div class="premio p6">
+<span>🍀</span>
+Suerte<br>la próxima
+</div>
+
+
+</div>
+
+</div>
+
+
+
+<button id="boton" onclick="girar()">
+🎡 GIRAR
+</button>
+
+
+<h2 id="resultado">
+🏆 Premio: -
+</h2>
+
+
+
+<hr>
+
+
+<button onclick="abrirAdmin()">
+⚙️
+</button>
+
+
+
+<div id="panel">
+
+
+<h2>🔐 Generador de links</h2>
+
+
+<input id="cliente" placeholder="Nombre cliente">
+
+
+<br><br>
+
+
+<button onclick="crearLink()">
+Crear link
+</button>
+
+
+<p id="link"></p>
+
+
+<button onclick="copiarLink()">
+📋 Copiar
+</button>
+
+
+</div>
+
+
+
+
+<script>
+
+
+let codigo =
+new URLSearchParams(window.location.search).get("id");
+
+
+let usado=false;
+
+
+
+if(codigo && localStorage.getItem("giro_"+codigo)){
+
+
+usado=true;
+
+boton.disabled=true;
+
+resultado.innerHTML=
+"❌ No hay giros disponibles";
+
+
+}
+
+
+
+function girar(){
+
+
+if(usado){
+
+resultado.innerHTML=
+"❌ No hay giros disponibles";
+
+return;
+
+}
+
+
+
+usado=true;
+
+
+let grados =
+Math.floor(Math.random()*360);
+
+
+
+let vueltas =
+360*8+grados;
+
+
+
+ruleta.style.transform =
+"rotate("+vueltas+"deg)";
+
+
+
+let premios=[
+
+"👚 Blusa",
+
+"💎 Joya",
+
+"👟 Zapatos",
+
+"🎁 Sorpresa",
+
+"👜 Bolso",
+
+"🍀 Suerte la próxima"
+
+];
+
+
+
+setTimeout(()=>{
+
+
+let posicion =
+(360-grados)%360;
+
+
+let indice =
+Math.floor(posicion/60);
+
+
+
+resultado.innerHTML =
+"🏆 Ganaste: "+premios[indice];
+
+
+
+if(codigo){
+
+localStorage.setItem(
+"giro_"+codigo,
+"usado"
+);
+
+}
+
+
+
+boton.disabled=true;
+
+
+},6000);
+
+
+
+}
+
+
+
+// GENERADOR
+
+
+let linkCreado="";
+
+
+
+function abrirAdmin(){
+
+
+let clave =
+prompt("Contraseña");
+
+
+
+if(clave=="EyT2026"){
+
+
+panel.style.display="block";
+
+
+}else{
+
+
+alert("❌ Incorrecto");
+
+
+}
+
+
+}
+
+
+
+
+function crearLink(){
+
+
+let nombre =
+cliente.value;
+
+
+
+if(nombre==""){
+
+
+alert("Escribe nombre");
+
+return;
+
+}
+
+
+
+let id =
+nombre+"_"+Math.floor(Math.random()*999999);
+
+
+
+linkCreado =
+
+location.href.split("?")[0]
+
++"?id="+id;
+
+
+
+link.innerHTML =
+"🔗 "+linkCreado;
+
+
+}
+
+
+
+function copiarLink(){
+
+
+navigator.clipboard.writeText(linkCreado);
+
+
+alert("✅ Link copiado");
+
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>
